@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import axios from 'axios';
-import { Activity, AlertCircle, BarChart3, Users, Zap, ShieldAlert, CheckCircle2, UploadCloud, FileSpreadsheet, DollarSign, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
+import { Activity, AlertCircle, BarChart3, Users, Zap, ShieldAlert, UploadCloud, FileSpreadsheet, DollarSign, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
 
 function App() {
   const [formData, setFormData] = useState({
@@ -25,7 +25,7 @@ function App() {
     if(e) e.preventDefault();
     setLoading(true);
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/predict', formData);
+      const response = await axios.post('https://retainiq-ai-churn-intelligence.onrender.com/api/predict', formData);
       setResult(response.data.prediction);
     } catch (error) {
       alert("Error processing prediction.");
@@ -41,11 +41,11 @@ function App() {
 
     setBulkLoading(true);
     setCurrentPage(1); // Reset to page 1 on new upload
-    const formData = new FormData();
-    formData.append("file", file);
+    const formDataUpload = new FormData();
+    formDataUpload.append("file", file);
 
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/predict/bulk', formData, {
+      const response = await axios.post('https://retainiq-ai-churn-intelligence.onrender.com/api/predict/bulk', formDataUpload, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       setBulkResults(response.data.results);
@@ -164,7 +164,6 @@ function App() {
                 <p className="text-xs text-slate-400 uppercase font-bold tracking-wider mb-2 flex items-center gap-2">
                   <Activity className="w-3 h-3 text-blue-400" /> Action Plan
                 </p>
-                {/* overflow-y-auto ensures internal scroll, max-h-32 prevents box from expanding infinitely */}
                 <div className="max-h-32 overflow-y-auto pr-2 text-sm text-slate-300 leading-relaxed whitespace-pre-line">
                   {getDetailedRecommendation(result.risk_level, result.segment)}
                 </div>
