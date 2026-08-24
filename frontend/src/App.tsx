@@ -55,28 +55,25 @@ function App() {
     setBulkLoading(false);
   };
 
-  // --- NAYA FEATURE: Row Click Handler ---
+  // --- Row Click Handler ---
   const handleRowClick = (row: any) => {
-    // 1. Form ko auto-fill karna
     setFormData(prev => ({
       ...prev,
       customer_id: row.customer_id,
       monthly_charges: row.monthly_charges,
     }));
     
-    // 2. Result ko auto-show karna bina API call ke
     setResult({
       churn_probability: row.churn_probability,
       risk_level: row.risk_level,
       segment: row.segment
     });
 
-    // 3. Page ko smoothly upar scroll karna jahan Single Form hai
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // --- NAYA FEATURE: Full Detailed Recommendation Logic ---
-  const getDetailedRecommendation = (risk: string, segment: string) => {
+  // --- Full Detailed Recommendation Logic (Fixed: Removed unused 'segment' parameter) ---
+  const getDetailedRecommendation = (risk: string) => {
     if (risk === 'Critical') {
       return "URGENT ACTION REQUIRED: This customer is at a highly critical risk of churning. \n\n1. Immediately assign a dedicated Customer Success Manager. \n2. Reach out via phone within the next 2 hours to address any unresolved issues. \n3. Offer a flat 20-30% retention discount on their next billing cycle to buy time. \n4. Do not rely on automated emails for this segment—personal touch is mandatory to prevent revenue loss.";
     }
@@ -159,13 +156,13 @@ function App() {
                 <p className="text-sm text-indigo-400 mt-1 font-medium">{result.segment}</p>
               </div>
 
-              {/* NAYA FEATURE: Full Detailed Recommendation Scrollable Box */}
+              {/* Full Detailed Recommendation Scrollable Box */}
               <div className="bg-[#0f172a] p-4 rounded-xl border border-slate-600 flex-1 flex flex-col">
                 <p className="text-xs text-slate-400 uppercase font-bold tracking-wider mb-2 flex items-center gap-2">
                   <Activity className="w-3 h-3 text-blue-400" /> Action Plan
                 </p>
                 <div className="max-h-32 overflow-y-auto pr-2 text-sm text-slate-300 leading-relaxed whitespace-pre-line">
-                  {getDetailedRecommendation(result.risk_level, result.segment)}
+                  {getDetailedRecommendation(result.risk_level)}
                 </div>
               </div>
             </div>
