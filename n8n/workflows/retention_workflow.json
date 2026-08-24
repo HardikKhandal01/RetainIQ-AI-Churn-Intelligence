@@ -1,0 +1,50 @@
+{
+  "name": "RetainIQ High-Risk Alert Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "churn-alert",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [ 250, 300 ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.body.risk_level}}",
+              "value2": "Critical"
+            }
+          ]
+        }
+      },
+      "name": "Check Risk Level",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [ 450, 300 ]
+    },
+    {
+      "parameters": {
+        "text": "=URGENT: Customer {{$json.body.customer_id}} has a {{$json.body.churn_probability * 100}}% chance of churning. Initiating WhatsApp outreach."
+      },
+      "name": "Send Slack/WhatsApp Alert",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [ 700, 200 ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [ [ { "node": "Check Risk Level", "type": "main", "index": 0 } ] ]
+    },
+    "Check Risk Level": {
+      "main": [ [ { "node": "Send Slack/WhatsApp Alert", "type": "main", "index": 0 } ] ]
+    }
+  },
+  "active": false
+}
